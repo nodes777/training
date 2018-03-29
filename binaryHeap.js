@@ -8,7 +8,6 @@ function run(){
 
 function MinHeap(){
     let heap = [null]; // have first element be null
-
 }
 
 MinHeap.prototype.insert = function(num) {
@@ -21,7 +20,7 @@ MinHeap.prototype.insert = function(num) {
             if(index >= 1){ // if we're not on the root node
                 // parent               //node we just inserted
                 [heap[Math.floor(index/2)], heap[index]] = [heap[index], heap[Math.floor(index/2)]]// ES6 destructuring an array, switch the parent and the node
-                
+
                 if(Math.floor(index/2) > 1) { // if the parent node is not the root
                     index = Math.floor(index/2) // set the index to be the parent, now the index will still refer to the number we just passed in
                 } else {
@@ -66,12 +65,12 @@ MinHeap.prototype.remove = function(){ // removing in a Binary Heap will always 
             if(heap[left] == undefined || heap[right] == undefined){ // if we're at the end of the tree, we can leave the while loop
                 break;
             }
-        } 
-         
+        }
+
     } else if (heap.length == 2){ // if theres one element in the array
         heap.splice(1,1) // cut the last element
     } else { // if theres no elements at all
-        return null 
+        return null
     }
 
     return smallest;
