@@ -17,7 +17,7 @@ var movies = [
                 "Jessie",
                 "Mary",
                 "Lily"
-            ] 
+            ]
         },
         {
             "title": "Really Good Times",
@@ -26,7 +26,7 @@ var movies = [
                 "Patricia",
                 "Carol"
             ]
-        }    
+        }
 ]
 
 
@@ -44,13 +44,15 @@ function run(){
             if(actorNode == undefined){
                 actorNode = new Node(actor);
             }
-            graph.addNode(actorNode); 
+            graph.addNode(actorNode);
             movieNode.addEdge(actorNode);
         }
     }
 
-    graph.setStart("Kyle");
-    graph.setEnd("Carol");
+    //graph.setStart("Kyle");
+   // graph.setEnd("Carol");
+
+    graph.breadthFirstSearch("Martin","Carol")
 
     console.log(graph)
 }
@@ -92,44 +94,63 @@ Graph.prototype.setEnd = function(actor){
     this.end = actor;
 }
 
-function breadthFirstSearch(){
+
+
+Graph.prototype.breadthFirstSearch = function(start, end){
+    var queue = [];
+
+    // Doesnt validate if these are in the graph
+    var start = this.graph[start];
+    var end = this.graph[end];
+
     // Start with this node
-    queue.push('you');
+    queue.push(start);
 
   // While there are still nodes to search
   while (queue.length > 0) {
 
     // Look at the next node
-    var person = queue.shift();
+    var current = queue.shift();
 
-    console.log(person);
+    // If we're done!
+    if (current == end) {
+          console.log(`Found: ${current.value}`);
+          // Make the path from start to end
+          var path = [];
 
-    // If not already checked
-    if (!searched[person]) {
-      // If we're done!
-      if (isEnd(person)) {
-        // Figure out the path by going backwards through parent nodes
-        var path = [person];
-        var next = parents[person];
-        while (next) {
-          path.push(next);
-          next = parents[next];
-        }
-        // Print out the path
-        console.log(path);
-        break;
-      } else {
-        // Look at node's neighbors
-        var next = graph[person];
-        for (var i = 0; i < next.length; i++) {
-          // Place them all in the queue and update parent
-          var neighbor = next[i];
-          queue.push(neighbor);
-          parents[neighbor] = person;
-        }
-        // Mark that node as searched
-        searched[person] = true;
+          path.push(end);
+          //follow the parents
+          var next = end.parent;
+          while(next != null){
+              path.push(next);
+              next = next.parent;
+          }
+          // An array to print out the path
+          var arr = path.map(function(n){
+            return n.value;
+          })
+          console.log(arr);
+          break;
       }
+
+    // We haven't found the start == end, check the edges
+    // If not already checked
+    if (!current.searched) {
+      // Check the edges
+      var edges = current.edges;
+      for(var i = 0; i<edges.length; i++){
+          // For each neighbor
+          var neighbor = edges[i];
+          // if it hasn't been searched
+          if(!neighbor.searched){
+              // set the parent relationship
+              neighbor.parent = current;
+              // add it to the queue
+              queue.push(neighbor);
+          }
+      }
+      // Mark this node as searched
+      current.searched = true;
     }
   }
 }
